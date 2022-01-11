@@ -21,32 +21,33 @@ enum Age {
 }
 
 // Build a "Car" by using values from the input arguments
-// - color (String)
-// - motor (Transmission enum)
-// - roof (boolean, true if the car has a hard top roof)
-// - miles (u32)
-fn car_factory(color: String, motor: Transmission, roof: bool, miles: u32) -> Car {
+fn car_factory(order: i32, miles: u32) -> Car {
 
-    if car_quality(miles).0 == Age::Used {
-        if roof {
-            println!("Preparing a used car: {:?}, {}, Hard top, {} miles", motor, color, miles);
-        } else {
-            println!("Preparing a used car: {:?}, {}, Convertible, {} miles", motor, color, miles);
-        }
-    } else {
-        if roof {
-            println!("Building a new car: {:?}, {}, Hard top, {} miles", motor, color, miles);
-        } else {
-            println!("Building a new car: {:?}, {}, Convertible, {} miles", motor, color, miles);
-        }
+    let colors = ["Blue", "Green", "Red", "Silver"];
+
+    let mut color = order as usize;
+    if color > 4 {
+        // color = 5 --> index 1, 6 --> 2, 7 --> 3, 8 --> 4
+        color = color - 4;
     }
 
-    return Car {
-        color: color,
+    // Add variety to orders for motor type and roof type
+    let mut motor = Transmission::Manual;
+    let mut roof = true;
+    if order % 3 == 0 {          // 3, 6, 9
+        motor = Transmission::Automatic;
+    } else if order % 2 == 0 {   // 2, 4, 8, 10
+        motor = Transmission::SemiAuto;
+        roof = false;
+    }                            // 1, 5, 7, 11
+
+    // Return requested "Car"
+    Car {
+        color: String::from(colors[(color-1) as usize]),
         motor: motor,
         roof: roof,
-        age: car_quality(miles),
-    };
+        age: car_quality(miles)
+    }
 }
 
 fn car_quality(miles: u32) -> (Age, u32) {
@@ -59,9 +60,52 @@ fn car_quality(miles: u32) -> (Age, u32) {
 }
 
 fn main() {
-    car_factory(String::from("Orange"), Transmission::Manual, true, 0);
+    use std::collections::HashMap;
+    let mut orders: HashMap<i32, Car> = HashMap::new();
 
-    car_factory(String::from("Red"), Transmission::SemiAuto, false, 565);
+    // Initialize counter variable
+    let mut order = 1;
+    // Declare a car as mutable "Car" struct
+    let mut car: Car;
 
-    car_factory(String::from("White"), Transmission::Automatic, true, 3000);
+    // Order 6 cars
+    // - Increment "order" after each request
+    // - Add each order <K, V> pair to "orders" hash map
+    // - Corrected code: Use ".insert()" method to add each order
+    // - Adjust println call to show order details from the hash map
+
+    // Car order #1: Used, Hard top
+    car = car_factory(order, 1000);
+    orders.insert(order, car);
+    println!("Car order {}: {:?}", order, orders.get(&order));
+
+    // Car order #2: Used, Convertible
+    order = order + 1;
+    car = car_factory(order, 2000);
+    orders.insert(order, car);
+    println!("Car order {}: {:?}", order, orders.get(&order));
+
+    // Car order #3: New, Hard top
+    order = order + 1;
+    car = car_factory(order, 0);
+    orders.insert(order, car);
+    println!("Car order {}: {:?}", order, orders.get(&order));
+
+    // Car order #4: New, Convertible
+    order = order + 1;
+    car = car_factory(order, 0);
+    orders.insert(order, car);
+    println!("Car order {}: {:?}", order, orders.get(&order));
+
+    // Car order #5: Used, Hard top
+    order = order + 1;
+    car = car_factory(order, 3000);
+    orders.insert(order, car);
+    println!("Car order {}: {:?}", order, orders.get(&order));
+
+    // Car order #6: Used, Hard top
+    order = order + 1;
+    car = car_factory(order, 4000);
+    orders.insert(order, car);
+    println!("Car order {}: {:?}", order, orders.get(&order));
 }

@@ -26,7 +26,7 @@ fn car_factory(order: i32, miles: u32) -> Car {
     let colors = ["Blue", "Green", "Red", "Silver"];
 
     let mut color = order as usize;
-    if color > 4 {
+    while color > 4 {
         // color = 5 --> index 1, 6 --> 2, 7 --> 3, 8 --> 4
         color = color - 4;
     }
@@ -63,49 +63,30 @@ fn main() {
     use std::collections::HashMap;
     let mut orders: HashMap<i32, Car> = HashMap::new();
 
-    // Initialize counter variable
-    let mut order = 1;
     // Declare a car as mutable "Car" struct
     let mut car: Car;
 
-    // Order 6 cars
-    // - Increment "order" after each request
-    // - Add each order <K, V> pair to "orders" hash map
-    // - Corrected code: Use ".insert()" method to add each order
-    // - Adjust println call to show order details from the hash map
+    // Order 11 cars
+    // Corrected code: Use "for" loop to fulfill orders for 11 cars
+    // Corrected code: "order" variable initialized and incremented in "for" loop
 
-    // Car order #1: Used, Hard top
-    car = car_factory(order, 1000);
-    orders.insert(order, car);
-    println!("Car order {}: {:?}", order, orders.get(&order));
+    // Start with zero miles
+    let mut miles = 0;
 
-    // Car order #2: Used, Convertible
-    order = order + 1;
-    car = car_factory(order, 2000);
-    orders.insert(order, car);
-    println!("Car order {}: {:?}", order, orders.get(&order));
+    for order in 1..12 {
 
-    // Car order #3: New, Hard top
-    order = order + 1;
-    car = car_factory(order, 0);
-    orders.insert(order, car);
-    println!("Car order {}: {:?}", order, orders.get(&order));
+        // Call car_factory to fulfill order
+        // Add order <K, V> pair to "orders" hash map
+        // Call println! to show order details from the hash map
+        car = car_factory(order, miles);
+        orders.insert(order, car);
+        println!("Car order {}: {:?}", order, orders.get(&order));
 
-    // Car order #4: New, Convertible
-    order = order + 1;
-    car = car_factory(order, 0);
-    orders.insert(order, car);
-    println!("Car order {}: {:?}", order, orders.get(&order));
-
-    // Car order #5: Used, Hard top
-    order = order + 1;
-    car = car_factory(order, 3000);
-    orders.insert(order, car);
-    println!("Car order {}: {:?}", order, orders.get(&order));
-
-    // Car order #6: Used, Hard top
-    order = order + 1;
-    car = car_factory(order, 4000);
-    orders.insert(order, car);
-    println!("Car order {}: {:?}", order, orders.get(&order));
+        // Reset miles for order variety
+        if miles == 2100 {
+            miles = 0;
+        } else {
+            miles = miles + 700;
+        }
+    }
 }
